@@ -2,6 +2,7 @@ import {
   ROUTES_PATH
 } from "../constants/routes.js";
 export let PREVIOUS_LOCATION = "";
+import Dashboard, { filteredBills, cards } from "../containers/Dashboard.js"
 
 // we use a class so as to test its methods in e2e tests
 export default class Login {

@@ -4,9 +4,6 @@
 
 
 // Ici j'importe DOM Test Library
-import {
-  getByTestId
-} from '@testing-library/dom'
 
 import LoginUI from "../views/LoginUI";
 import Login from "../containers/Login.js";
@@ -138,9 +135,64 @@ describe("Given that I am a user on login page", () => {
       );
     });
 
+    /// nu merge  nu acopera
+    test("When have and fails with message error", async () => {
+      document.body.innerHTML = LoginUI();
+      const inputData = {
+        email: "johndoe@email.com",
+        password: "azerty",
+      };
+      const inputEmailUser = screen.getByTestId("employee-email-input");
+      fireEvent.change(inputEmailUser, {
+        target: {
+          value: inputData.email
+        }
+      });
+      const inputPasswordUser = screen.getByTestId("employee-password-input");
+      fireEvent.change(inputPasswordUser, {
+        target: {
+          value: inputData.password
+        },
+      });
+      const form = screen.getByTestId("form-employee");
+      // localStorage should be populated with form data
+      Object.defineProperty(window, "localStorage", {
+        value: {
+          getItem: jest.fn(() => null),
+          setItem: jest.fn(() => null),
+        },
+        writable: true,
+      });
+      // we have to mock navigation to test it
+      const onNavigate = (pathname) => {
+        document.body.innerHTML = ROUTES({
+          pathname
+        });
+      };
+      let PREVIOUS_LOCATION = "";
+      const store = jest.fn();
+      const login = new Login({
+        document,
+        localStorage: window.localStorage,
+        onNavigate,
+        PREVIOUS_LOCATION,
+        store,
+      });
+      const handleSubmit = jest.fn(login.handleSubmitEmployee);
+      const getError = new Error('network error');
+      login.login = jest.fn().mockRejectedValue(getError);
+      const createUserMethod = jest.spyOn(login.login(), 'catch')
+      form.addEventListener("submit", handleSubmit);
+      fireEvent.submit(form);
+
+      expect(createUserMethod).toHaveBeenCalled()
+    })
+
+
+
     test("It should renders Bills page", () => {
-      expect(screen.getAllByText("Mes notes de frais")).toBeTruthy();
-    });
+      expect(screen.queryByText('Mes notes de frais')).toBeInTheDocument
+    })
   });
 });
 
@@ -186,19 +238,20 @@ describe("Given that I am a admin on login page", () => {
 
       const form = screen.getByTestId("form-admin");
       const handleSubmit = jest.fn((e) => e.preventDefault());
-
       form.addEventListener("submit", handleSubmit);
       fireEvent.submit(form);
       expect(screen.getByTestId("form-admin")).toBeTruthy();
     });
   });
 
+
+
   describe("When I do fill fields in correct format and I click on admin button Login In", () => {
-    test("Then I should be identified as an HR admin in app", () => {
+    test("Then I should be identified as an admin in app", () => {
       document.body.innerHTML = LoginUI();
       const inputData = {
         type: "Admin",
-        email: "johndoe@email.com",
+        email: "admin@email.com",
         password: "azerty",
         status: "connected",
       };
@@ -266,8 +319,8 @@ describe("Given that I am a admin on login page", () => {
       );
     });
 
-    test("It should renders HR dashboard page", () => {
-      expect(screen.queryByText("Validations")).toBeTruthy();
+    test("It should renders admin dashboard page", () => {
+      expect(screen.queryByText("Validations")).toBeInTheDocument;
     });
   });
 });
