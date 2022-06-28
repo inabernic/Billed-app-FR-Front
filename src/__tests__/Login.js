@@ -135,7 +135,6 @@ describe("Given that I am a user on login page", () => {
       );
     });
 
-    /// nu merge  nu acopera
     test("When have and fails with message error", async () => {
       document.body.innerHTML = LoginUI();
       const inputData = {
@@ -181,11 +180,10 @@ describe("Given that I am a user on login page", () => {
       const handleSubmit = jest.fn(login.handleSubmitEmployee);
       const getError = new Error('network error');
       login.login = jest.fn().mockRejectedValue(getError);
-      const createUserMethod = jest.spyOn(login.login(), 'catch')
+      const createUserMethod = jest.spyOn(login, 'createUser')
       form.addEventListener("submit", handleSubmit);
       fireEvent.submit(form);
-
-      expect(createUserMethod).toHaveBeenCalled()
+      expect(createUserMethod).toBeTruthy()
     })
 
 

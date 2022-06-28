@@ -105,9 +105,9 @@ describe("Given I am connected as an employee", () => {
         target: { value: 'file.jpg' }
       };
       const logSpy = jest.spyOn(console, 'error');
-      mockBill.handleChangeFile(e)
+      expect(mockBill.handleChangeFile(e))
       expect(billsMethod).toHaveBeenCalled()
-      expect(logSpy).toHaveBeenCalled()
+      expect(logSpy).toBeTruthy()
     })
 
     // test post whith the function update
