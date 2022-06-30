@@ -9,16 +9,13 @@ import Bills from "../containers/Bills.js"
 import { ROUTES_PATH } from "../constants/routes.js";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import mockStore from "../__mocks__/store"
+import router from "../app/Router.js";
 
 jest.mock("../app/store", () => mockStore)
-
-import router from "../app/Router.js";
-import userEvent from "@testing-library/user-event";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     test("Then bill icon in vertical layout should be highlighted", async () => {
-
       Object.defineProperty(window, 'localStorage', { value: localStorageMock })
       window.localStorage.setItem('user', JSON.stringify({
         type: 'Employee'
@@ -65,14 +62,11 @@ describe('Given I am connected as Employée and I am on Bills page and I clicked
       icons[0].addEventListener("click", handleClickIconEye1)
       fireEvent.click((icons[0]))
       expect(handleClickIconEye1).toHaveBeenCalled()
-
       const modale = screen.getByTestId('modaleFile')
       expect(modale).toBeTruthy()
     })
   })
 })
-
-
 
 // test d'intégration GET
 describe("Given I am a user connected as Employee", () => {
@@ -99,7 +93,6 @@ describe("Given I am a user connected as Employee", () => {
       expect(screen.getAllByTestId("icon-eye")).toBeTruthy()
       expect(screen.getAllByTestId("btn-new-bill")).toBeTruthy()
     })
-
   })
 })
 
